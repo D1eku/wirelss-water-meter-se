@@ -1,7 +1,9 @@
 from telnetlib import STATUS
+
+from django.shortcuts import render
 from django.views import View
 from .models import Medicion
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.forms.models import model_to_dict
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser 
@@ -11,9 +13,9 @@ from .serializers import MedicionSerializer
 # Create your views here.
 class MedicionListView(View):
   def get(self, request):
+    print("Hello, Request is --> ")
     mList = Medicion.objects.all()
-    return JsonResponse(list(mList.values()), safe=False)
- 
+    return HttpResponse('Hello HttpResponse')
 
 class MedicionDetailView(View):
   def get(self, request,pk):
