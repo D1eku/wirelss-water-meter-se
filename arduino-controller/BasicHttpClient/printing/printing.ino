@@ -34,16 +34,14 @@ void writeScreen(String toWrite){
 }
 
 void loop() {
-  int inputButton = digitalRead(buttonPin);
-  if(canShow){
-    lcd.clear();
-    lcd.setCursor(0,1);
-    lcd.print("GUATONA CONCHATUMARE");
+  int inputButton = digitalRead(buttonPin);//lee el input del boton
+  if(canShow){//Si puedes mostrar la informacion en el lcd.
+    writeScreen("Guaton Culiao");
     canShow = false;
     delay(1500);
   }
   else{
-    lcd.clear();
+    clearScreen();
   }
   if(inputButton == HIGH){
     Serial.println("Input button is HIGH");
