@@ -5,12 +5,15 @@
 const int rs = D2, en = D3, d4 = D5, d5 = D6, d6 = D7, d7 = D8;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
-const string headerText = "Aqua Pro!";
+const String headerText = "Aqua Pro!";
 
 const int buttonPin = D0;
 
+bool canShow = false;
+
 void setup() {
   pinMode(buttonPin, INPUT);
+  Serial.begin(115200);
   
   lcd.begin(16, 2);
   lcd.print(headerText);
@@ -25,17 +28,30 @@ void clearScreen(){
   lcd.setCursor(0,1);
 }
 
-void writeScreen(string toWrite){
+void writeScreen(String toWrite){
   clearScreen();
   lcd.print(toWrite);
 }
 
 void loop() {
-  buttonState = digitalRead(buttonPin);
-  if(buttonState == HIGH){
-    writeScreen("Chupalo felipe varas");
-    delay(500);
-  }else{
-    clearScreen();
+  int inputButton = digitalRead(buttonPin);
+  if(canShow){
+    lcd.clear();
+    lcd.setCursor(0,1);
+    lcd.print("GUATONA CONCHATUMARE");
+    canShow = false;
+    delay(1500);
+  }
+  else{
+    lcd.clear();
+  }
+  if(inputButton == HIGH){
+    Serial.println("Input button is HIGH");
+    if(canShow){
+      canShow = false;
+    }
+    else{
+      canShow = true;
+    }
   }
 }
