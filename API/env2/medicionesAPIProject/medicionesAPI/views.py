@@ -1,5 +1,5 @@
 from telnetlib import STATUS
-
+from measureWater import *
 from django.shortcuts import render
 from django.views import View
 from .models import Medicion
@@ -30,3 +30,7 @@ class MedicionDetailView(View):
       medicion_serializer.save()
       return JsonResponse(medicion_serializer.data, status=status.HTTP_201_CREATED)
     return JsonResponse(medicion_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+  def measure(self):
+    measure = measureWater()
+    return JsonResponse(measure)
