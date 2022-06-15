@@ -34,7 +34,7 @@ void setup() {
   lcd.begin(16, 2);
   lcd.print("Aqua Pro!");
 
-  WiFiMulti.addAP("test", "luciana22");   // add Wi-Fi networks you want to connect to
+  WiFiMulti.addAP("Raspberry-WIFI", "raspberryembebidos");   // add Wi-Fi networks you want to connect to
 
   Serial.println("Connecting ...");
   int i = 0;
@@ -64,7 +64,7 @@ void loop() {
     HTTPClient http;
 
     Serial.print("[HTTP] begin...\n");
-    if (http.begin(client, "http://192.168.227.254:8000/api/medicion/")) {  // HTTP
+    if (http.begin(client, "http://192.168.5.1:8000/api/medicion/")) {  // HTTP
       
 
       Serial.print("[HTTP] GET...\n");
