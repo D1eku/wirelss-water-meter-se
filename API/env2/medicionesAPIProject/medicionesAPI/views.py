@@ -31,6 +31,8 @@ class MedicionDetailView(View):
       return JsonResponse(medicion_serializer.data, status=status.HTTP_201_CREATED)
     return JsonResponse(medicion_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-  def measure(self):
+
+class MedicionMeasureView(View):
+  def get(self,request):
     measure = measureWater()
-    return JsonResponse(measure)
+    return HttpResponse(measure)

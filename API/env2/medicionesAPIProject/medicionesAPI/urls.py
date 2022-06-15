@@ -1,9 +1,9 @@
 from django.urls import path
-from .views import MedicionListView, MedicionDetailView
+from .views import MedicionListView, MedicionDetailView, MedicionMeasureView
 
 urlpatterns = [
   path('medicion/',MedicionListView.as_view(), name='medicion_list'),
   path('medicion/<int:pk>/', MedicionDetailView.as_view(), name='medicion'),
   path('medicion/create/', MedicionDetailView.as_view(), name='create_medicion'),
-  path('medicion/measure/', MedicionDetailView.as_view(), name='measure')
+  path('medicion/measure/', MedicionMeasureView.as_view(), name='measure')
 ]
