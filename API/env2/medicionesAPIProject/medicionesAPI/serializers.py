@@ -8,4 +8,4 @@ class MedicionSerializer(serializers.ModelSerializer):
         fields = ('id',
                   'address',
                   'value',
-                  'measured_at')
+                  'measure_at')
