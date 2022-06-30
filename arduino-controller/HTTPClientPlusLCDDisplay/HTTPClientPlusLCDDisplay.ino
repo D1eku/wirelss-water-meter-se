@@ -24,11 +24,13 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 const String headerText = "Aqua Pro!";
 
 const int buttonPin = D0;
+const int lcdPowerPin = D1;
 
 bool canShow = false;
 
 void setup() {
   pinMode(buttonPin, INPUT);
+  pinMode(lcdPowerPin, OUTPUT);
   
   Serial.begin(115200);         // Start the Serial communication to send messages to the computer
   delay(10);
@@ -37,8 +39,8 @@ void setup() {
   lcd.setCursor(0,1);
   lcd.print("Conecting....");
 
-  //WiFiMulti.addAP("Raspberry-WIFI", "raspberryembebidos");   // add Wi-Fi networks you want to connect to
-  WiFiMulti.addAP("test", "luciana22"); 
+  WiFiMulti.addAP("Raspberry-WIFI", "raspberryembebidos");   // add Wi-Fi networks you want to connect to
+  //WiFiMulti.addAP("test", "luciana22"); 
   Serial.println("Connecting ...");
   int i = 0;
   while (WiFiMulti.run() != WL_CONNECTED) { // Wait for the Wi-Fi to connect: scan for Wi-Fi networks, and connect to the strongest of the networks above
@@ -59,21 +61,21 @@ void conection(){
     HTTPClient http;
 
     Serial.print("[HTTP] begin...\n");
-    if (http.begin(client, "http://192.168.116.254:3000/water-meter")) {  // HTTP
-      
-
+    if (http.begin(client, "http://192.168.5.1:8000/api/medicion/measure/")) {  // HTTP
       Serial.print("[HTTP] GET...\n");
       // start connection and send HTTP header
       int httpCode = http.GET();
       Serial.printf("%d\n",httpCode);
 
       // httpCode will be negative on error
+      delay(10000);
       if (httpCode > 0) {
         // HTTP header has been send and Server response header has been handled
         Serial.printf("[HTTP] GET... code: %d\n", httpCode);
         //Serial.println(http.getString());
         // file found at server
         if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
+          delay(8000);
           String payload = http.getString();
           Serial.println(payload);
           lcd.clear();
@@ -98,9 +100,6 @@ void conection(){
 
 void clearScreen(){
   lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print(headerText);
-  lcd.setCursor(0,1);
 }
 void writeScreen(String toWrite){
   clearScreen();
@@ -112,15 +111,15 @@ void loop() {
   if ((WiFiMulti.run() == WL_CONNECTED)) {
     int inputButton = digitalRead(buttonPin);//lee el input del boton
     if(canShow){//Si puedes mostrar la informacion en el lcd.;
-      //writeScreen("Guaton Culiao");
       conection();
       canShow = false;
-      delay(1500);
+      delay(1000);
     }
     else{
       clearScreen();
     }
     if(inputButton == HIGH){
+      digitalWrite(D1,HIGH);
       Serial.println("Input button is HIGH");
       if(canShow){
         canShow = false;
@@ -128,6 +127,9 @@ void loop() {
       else{
         canShow = true;
       }
+    }
+    else{
+      digitalWrite(D1,LOW);
     }
   }
 }
