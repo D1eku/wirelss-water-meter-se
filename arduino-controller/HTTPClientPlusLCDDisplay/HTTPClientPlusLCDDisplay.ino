@@ -24,13 +24,15 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 const String headerText = "Aqua Pro!";
 
 const int buttonPin = D0;
-const int lcdPowerPin = D1;
+const int ledLCDPin = D1;
 
 bool canShow = false;
 
 void setup() {
   pinMode(buttonPin, INPUT);
-  pinMode(lcdPowerPin, OUTPUT);
+  pinMode(ledLCDPin, OUTPUT);
+
+  digitalWrite(ledLCDPin, HIGH);
   
   Serial.begin(115200);         // Start the Serial communication to send messages to the computer
   delay(10);
@@ -62,20 +64,20 @@ void conection(){
 
     Serial.print("[HTTP] begin...\n");
     if (http.begin(client, "http://192.168.5.1:8000/api/medicion/measure/")) {  // HTTP
+      
+
       Serial.print("[HTTP] GET...\n");
       // start connection and send HTTP header
       int httpCode = http.GET();
       Serial.printf("%d\n",httpCode);
 
       // httpCode will be negative on error
-      delay(10000);
       if (httpCode > 0) {
         // HTTP header has been send and Server response header has been handled
         Serial.printf("[HTTP] GET... code: %d\n", httpCode);
         //Serial.println(http.getString());
         // file found at server
         if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
-          delay(8000);
           String payload = http.getString();
           Serial.println(payload);
           lcd.clear();
@@ -111,15 +113,15 @@ void loop() {
   if ((WiFiMulti.run() == WL_CONNECTED)) {
     int inputButton = digitalRead(buttonPin);//lee el input del boton
     if(canShow){//Si puedes mostrar la informacion en el lcd.;
+      digitalWrite(ledLCDPin, HIGH);
       conection();
       canShow = false;
-      delay(1000);
+      delay(1500);
     }
     else{
       clearScreen();
     }
     if(inputButton == HIGH){
-      digitalWrite(D1,HIGH);
       Serial.println("Input button is HIGH");
       if(canShow){
         canShow = false;
@@ -127,9 +129,8 @@ void loop() {
       else{
         canShow = true;
       }
-    }
-    else{
-      digitalWrite(D1,LOW);
+    }else{
+      digitalWrite(ledLCDPin, LOW);
     }
   }
 }
