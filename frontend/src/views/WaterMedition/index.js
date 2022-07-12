@@ -9,7 +9,7 @@ export const WaterMedition = () => {
   const [data, setData] = useState([]) 
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    fetch("192.168.5.1") 
+    fetch("192.168.5.1:8000") 
       .then((response) => response.json())
       .then((data) => {
         setData(data);
