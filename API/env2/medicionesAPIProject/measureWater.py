@@ -10,10 +10,11 @@ def takePhoto ():
   camera = PiCamera()
   camera.resolution = (800, 600)
   camera.start_preview()
-  sleep(4)
-  photoPath = '/home/embebidos1/foto_prueba.jpg'
+  #sleep(4)
+  photoPath = '/home/embebidos1/measure_picture.jpg'
   camera.capture(photoPath)
   camera.stop_preview()
+  camera.close()
   return photoPath
 
 def photoProcessing (path):
@@ -26,16 +27,20 @@ def photoProcessing (path):
   cv2.imshow("Image", th3)
 
   # Teclas para salir de la ventana que muestra la imagen
-  cv2.waitKey(0)
+  #cv2.waitKey(0)
   cv2.destroyAllWindows()
 
   # Se obtiene el texto de la imagen
   text = pytesseract.image_to_string(th3)
+  #print("From measure water text equal to --> "+str(text))
   return text
 
 def measureWater():
   measure = photoProcessing(takePhoto())
-  print(measure)
+  
+  #measure = photoProcessing('/home/embebidos1/measure_picture.jpg')
+  print("From measureWater, measure is --> ",measure)
+  print("Len of measure is --> ", str(len(measure)))
   return measure
 
 
@@ -66,7 +71,7 @@ def measureWater():
 #num_med = text[0]+text[1]+text[2]+text[3]+text[4]+text[5]+text[6]
 #num = text[:len(text)-3]
 
-print(text)
+
 #print(num_med)
 
 #medidor = text[:-1]

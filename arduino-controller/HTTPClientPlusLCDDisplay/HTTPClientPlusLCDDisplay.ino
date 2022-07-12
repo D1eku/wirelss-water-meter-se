@@ -27,6 +27,13 @@ const int buttonPin = D0;
 const int ledLCDPin = D1;
 
 bool canShow = false;
+bool haveRequest = false;
+
+const char* urlRequest = "http://192.168.5.1:8000/api/medicion/measure/";
+
+long t1 = 0;
+long t2 = 0;
+long tiempoSegundos = 0;
 
 void setup() {
   pinMode(buttonPin, INPUT);
@@ -55,27 +62,22 @@ void setup() {
   Serial.print("IP address:\t");
   Serial.println(WiFi.localIP());           // Send the IP address of the ESP8266 to the computer
 
+  t1 = millis();//Inicializa el tiempo actual.
 }
 
-void conection(){
+void makeRequest(){
     WiFiClient client;
-
     HTTPClient http;
-
     Serial.print("[HTTP] begin...\n");
-    if (http.begin(client, "http://192.168.5.1:8000/api/medicion/measure/")) {  // HTTP
-      
-
-      Serial.print("[HTTP] GET...\n");
-      // start connection and send HTTP header
+    
+    if (http.begin(client, urlRequest)) {  // make http request to get measure
+      Serial.print("[HTTP] GET...\n"); // start connection and send HTTP header
       int httpCode = http.GET();
       Serial.printf("%d\n",httpCode);
-
-      // httpCode will be negative on error
-      if (httpCode > 0) {
+      if (httpCode > 0) {// httpCode will be negative on error
         // HTTP header has been send and Server response header has been handled
+        // La request fue enviada y ahora esperamos la respuesta.
         Serial.printf("[HTTP] GET... code: %d\n", httpCode);
-        //Serial.println(http.getString());
         // file found at server
         if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
           String payload = http.getString();
@@ -109,18 +111,33 @@ void writeScreen(String toWrite){
 }
 
 void loop() {
+  t2 = millis();
   // wait for WiFi connection
-  if ((WiFiMulti.run() == WL_CONNECTED)) {
+  if ((WiFiMulti.run() == WL_CONNECTED)) {//Siempre que haya conexion wifi.
+
+    //Make request per 1 hour.
+
+    if(t2 > (t1+1000)){
+      t1 = millis();//Actualiza el tiempo.
+
+      tiempoSegundos = t1/1000;
+      Serial.print("Ha transcurrido: ");
+      Serial.print(tiempoSegundos);
+      Serial.println(" Desde que se encendio el arduino.");
+    }
+
+    //TODO YOU NEED TO RESET THE TIMER OR THE TIME PLEASE HELP I DONT HAVE TIME :C
+    if(tiempoSegundos > 10){
+      //makeRequestWithOutLCDPrint();
+      makeRequest();
+      tiempoSegundos = 0;
+      t1=0;
+      t2=0;
+    }
+
+    
     int inputButton = digitalRead(buttonPin);//lee el input del boton
-    if(canShow){//Si puedes mostrar la informacion en el lcd.;
-      digitalWrite(ledLCDPin, HIGH);
-      conection();
-      canShow = false;
-      delay(1500);
-    }
-    else{
-      clearScreen();
-    }
+    
     if(inputButton == HIGH){
       Serial.println("Input button is HIGH");
       if(canShow){
@@ -132,5 +149,17 @@ void loop() {
     }else{
       digitalWrite(ledLCDPin, LOW);
     }
+
+    if(canShow){//Si puedes mostrar la informacion en el lcd.;
+      digitalWrite(ledLCDPin, HIGH);//Enciende el lcd
+      makeRequest();//Conectate a la pagina
+      canShow = false;//Ya no puedes mostrar la data.
+      delay(1500);
+      clearScreen();//Limpia la pantalla
+    }
+    //else{//Si no limpia la pantalla.
+    //  clearScreen();
+    //}
+    
   }
 }

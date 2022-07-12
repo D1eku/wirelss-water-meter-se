@@ -1,5 +1,6 @@
 from telnetlib import STATUS
-#from measureWater import *
+from measureWater import *
+#from ..measureWater import measureWater
 from django.shortcuts import render
 from django.views import View
 from .models import Medicion
@@ -40,8 +41,7 @@ def createMedicion(request):
 
 class MedicionMeasureView(View):
   def get(self,request):
-    measure = 'tul'
-    #measure = measureWater()
+    measure = measureWater()
     return HttpResponse(measure)
 
 
