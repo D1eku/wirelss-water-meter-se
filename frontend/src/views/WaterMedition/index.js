@@ -1,47 +1,24 @@
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import { WaterGraphs } from "../../components/WaterGraphs";
+import { useEffect, useState } from "react";
 
-const dummyData = [
-  {
-    id: 1,
-    fecha: "10-08-2022",
-    medicion: 9382,
-    direccion: "mi casa",
-  },
-  {
-    id: 1,
-    fecha: "11-08-2022",
-    medicion: 1234,
-    direccion: "mi casa",
-  },
-  {
-    id: 1,
-    fecha: "12-08-2022",
-    medicion: 1543,
-    direccion: "mi casa",
-  },
-  {
-    id: 1,
-    fecha: "13-08-2022",
-    medicion: 5754,
-    direccion: "mi casa",
-  },
-  {
-    id: 1,
-    fecha: "14-08-2022",
-    medicion: 3456,
-    direccion: "mi casa",
-  },
-  {
-    id: 1,
-    fecha: "15-08-2022",
-    medicion: 0,
-    direccion: "mi casa",
-  },
-];
+
 
 export const WaterMedition = () => {
+  const [data, setData] = useState([]) 
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    fetch("192.168.5.1") 
+      .then((response) => response.json())
+      .then((data) => {
+        setData(data);
+        setIsLoading(false); 
+      });
+  }, [])
+  if(isLoading){
+    return <h1>Cargando...</h1>
+  }
   return (
     <div className="container py-5 h-100">
       <div className="row d-flex justify-content-center align-items-center h-100">
@@ -69,18 +46,18 @@ export const WaterMedition = () => {
             </tr>
           </thead>
           <tbody>
-            {dummyData.length > 0 &&
-              dummyData.map((data) => (
+            {data.length > 0 &&
+              data.map((value) => (
                 <tr>
-                  <td>{data.id}</td>
-                  <td>{data.fecha}</td>
-                  <td>{data.medicion}</td>
-                  <td>{data.direccion}</td>
+                  <td>{value.id}</td>
+                  <td>{value.fecha}</td>
+                  <td>{value.medicion}</td>
+                  <td>{value.direccion}</td>
                 </tr>
               ))}
           </tbody>
         </Table>
-        <WaterGraphs data={dummyData}/>
+        <WaterGraphs data={data} />
       </div>
     </div>
   );
