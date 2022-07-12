@@ -31,10 +31,6 @@ bool haveRequest = false;
 
 const char* urlRequest = "http://192.168.5.1:8000/api/medicion/measure/";
 
-long t1 = 0;
-long t2 = 0;
-long tiempoSegundos = 0;
-
 void setup() {
   pinMode(buttonPin, INPUT);
   pinMode(ledLCDPin, OUTPUT);
@@ -61,8 +57,6 @@ void setup() {
   Serial.println(WiFi.SSID());              // Tell us what network we're connected to
   Serial.print("IP address:\t");
   Serial.println(WiFi.localIP());           // Send the IP address of the ESP8266 to the computer
-
-  t1 = millis();//Inicializa el tiempo actual.
 }
 
 void makeRequest(){
@@ -111,31 +105,10 @@ void writeScreen(String toWrite){
 }
 
 void loop() {
-  t2 = millis();
   // wait for WiFi connection
   if ((WiFiMulti.run() == WL_CONNECTED)) {//Siempre que haya conexion wifi.
 
-    //Make request per 1 hour.
-
-    if(t2 > (t1+1000)){
-      t1 = millis();//Actualiza el tiempo.
-
-      tiempoSegundos = t1/1000;
-      Serial.print("Ha transcurrido: ");
-      Serial.print(tiempoSegundos);
-      Serial.println(" Desde que se encendio el arduino.");
-    }
-
-    //TODO YOU NEED TO RESET THE TIMER OR THE TIME PLEASE HELP I DONT HAVE TIME :C
-    if(tiempoSegundos > 10){
-      //makeRequestWithOutLCDPrint();
-      makeRequest();
-      tiempoSegundos = 0;
-      t1=0;
-      t2=0;
-    }
-
-    
+    //Make request per 1 hour.    
     int inputButton = digitalRead(buttonPin);//lee el input del boton
     
     if(inputButton == HIGH){
