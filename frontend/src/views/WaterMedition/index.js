@@ -6,7 +6,25 @@ import axios from "axios";
 
 
 export const WaterMedition = () => {
-  const [data, setData] = useState([]) 
+
+  const onChangeDateRevition =(e) =>{
+    
+    const aux2 = []
+    originalData.forEach( element => {
+      if(element.measure_at === e )
+        aux2.push(element)
+    })
+    
+    if(aux2 === []){
+      setData(originalData);
+    }else{
+      setData(aux2)
+    }
+
+  }
+
+  const [data, setData] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     axios.get("http://192.168.5.1:8000/api/medicion/").then((res) => {
@@ -16,7 +34,9 @@ export const WaterMedition = () => {
       console.log("Array before ", res.data.mediciones)
       aux.sort((a,b) => a.measure_at > b.measure_at)
       console.log("Array after ", aux)
-      setData(res.data.mediciones);
+      setOriginalData(aux);
+      console.log("original data ", originalData)
+      setData(originalData);
       setIsLoading(false);
 
     })
@@ -32,6 +52,8 @@ export const WaterMedition = () => {
           <Form.Control
             type="date"
             placeholder="Seleccione fecha"
+            onChange={e => onChangeDateRevition(e.target.value)}
+            onClick={e => console.log(e.target.value)}
             style={{
               width: "200px",
             }}
@@ -50,7 +72,7 @@ export const WaterMedition = () => {
               <th>Direccion</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="date">
             {data.length > 0 &&
               data.map((value, i) => (
                 <tr key={i}>
@@ -63,7 +85,10 @@ export const WaterMedition = () => {
           </tbody>
         </Table>
         <WaterGraphs data={data} />
+        <WaterGraphs data={originalData} />
       </div>
+      
     </div>
   );
 };
+

@@ -26,7 +26,7 @@ export const Login = () => {
 
     console.log("canRedirect: ", canRedirect)
     if(canRedirect){
-      window.location.href = "/menu/waterMedition')"
+      window.location.href = "/menu/waterMedition/"
     }
   }
 
