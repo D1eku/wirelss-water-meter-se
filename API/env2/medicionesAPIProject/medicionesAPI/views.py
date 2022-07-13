@@ -1,6 +1,5 @@
 from telnetlib import STATUS
-import asyncio
-#from measureWater import *
+from measureWater import *
 #from ..measureWater import measureWater
 from django.shortcuts import render
 from django.views import View
@@ -15,17 +14,15 @@ from .forms import NewUserForm
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
+from django.core import serializers
+import json
 
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
-
-
-
-
 def getMedicionList(request):
   print("Hello, Request is --> ")
-  mList = list(Medicion.objects.values('address','value','measure_at'))
+  mList = list(Medicion.objects.values('address','value','measure_at')) 
   return JsonResponse({"mediciones":mList})
 
 
@@ -46,8 +43,7 @@ def createMedicion(request):
 
 class MedicionMeasureView(View):
   def get(self,request):
-    #measure = measureWater()
-    measure = 'tul'
+    measure = measureWater()
     return HttpResponse(measure)
 
 
@@ -74,7 +70,6 @@ def login_request(request):
     print("llegue aquii")
     form = AuthenticationForm(request, data=request.POST)
     print("llego aqui x2")
-    print(form)
     print(request)
     print(form.errors)
     if form.is_valid():
@@ -85,6 +80,7 @@ def login_request(request):
       user = authenticate(username=username, password=password)
       if user is not None:
         login(request, user)
+        print(user)
         messages.info(request, f"You are now logged in as {username}.")
         return HttpResponse("Logueado")
       else:
@@ -99,5 +95,3 @@ def logout_request(request):
 	logout(request)
 	messages.info(request, "You have successfully logged out.") 
 	return HttpResponse('a casa, redirigiendo...')
-
-
