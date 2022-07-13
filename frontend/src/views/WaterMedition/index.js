@@ -2,19 +2,24 @@ import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import { WaterGraphs } from "../../components/WaterGraphs";
 import { useEffect, useState } from "react";
-
+import axios from "axios";
 
 
 export const WaterMedition = () => {
   const [data, setData] = useState([]) 
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    fetch("192.168.5.1:8000") 
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-        setIsLoading(false); 
-      });
+    axios.get("http://192.168.5.1:8000/api/medicion/").then((res) => {
+      //console.log("Res.data = ", res.data);
+      let aux = res.data.mediciones
+      //sorting data....
+      console.log("Array before ", res.data.mediciones)
+      aux.sort((a,b) => a.measure_at > b.measure_at)
+      console.log("Array after ", aux)
+      setData(res.data.mediciones);
+      setIsLoading(false);
+
+    })
   }, [])
   if(isLoading){
     return <h1>Cargando...</h1>
@@ -47,12 +52,12 @@ export const WaterMedition = () => {
           </thead>
           <tbody>
             {data.length > 0 &&
-              data.map((value) => (
-                <tr>
-                  <td>{value.id}</td>
-                  <td>{value.fecha}</td>
-                  <td>{value.medicion}</td>
-                  <td>{value.direccion}</td>
+              data.map((value, i) => (
+                <tr key={i}>
+                  <td>{i}</td>
+                  <td>{value.measure_at}</td>
+                  <td>{value.value}</td>
+                  <td>{value.address}</td>
                 </tr>
               ))}
           </tbody>

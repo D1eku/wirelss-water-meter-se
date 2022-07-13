@@ -10,17 +10,18 @@ import {
 } from "recharts";
 
 export const WaterGraphs = ({ data }) => {
+  console.log("from whater graphs : ", data)
   const dataGraph = data.map((value) => {
-    return { name: value.fecha, medicion: value.medicion };
+    return { name: value.measure_at, medicion: value.value };
   });
   return (
     <LineChart
-      width={500}
-      height={300}
+      width={800}
+      height={450}
       data={dataGraph}
       margin={{
         top: 5,
-        right: 30,
+        right: 20,
         left: 20,
         bottom: 5,
       }}
