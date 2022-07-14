@@ -16,11 +16,15 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
 from django.core import serializers
 import json
-
+from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
+now = datetime.now()
+
+
 def getMedicionList(request):
+  
   print("Hello, Request is --> ")
   mList = list(Medicion.objects.values('address','value','measure_at')) 
   return JsonResponse({"mediciones":mList})
@@ -33,6 +37,14 @@ def getMedicion(request,pk):
 
 @csrf_exempt
 def createMedicion(request):
+  current = datetime.now()
+  diff = (current-now).total_seconds()
+  if(diff<= 180):
+      return HttpResponse('No han pasado 3 min')
+  else:
+      now = current
+  #measure = measureWater()
+  
   medicion_data = JSONParser().parse(request)
   medicion_serializer = MedicionSerializer(data = medicion_data)
   if medicion_serializer.is_valid():

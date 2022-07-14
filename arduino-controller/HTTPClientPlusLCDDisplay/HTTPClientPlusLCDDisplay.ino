@@ -107,8 +107,6 @@ void writeScreen(String toWrite){
 void loop() {
   // wait for WiFi connection
   if ((WiFiMulti.run() == WL_CONNECTED)) {//Siempre que haya conexion wifi.
-
-    //Make request per 1 hour.    
     int inputButton = digitalRead(buttonPin);//lee el input del boton
     
     if(inputButton == HIGH){
@@ -127,7 +125,7 @@ void loop() {
       digitalWrite(ledLCDPin, HIGH);//Enciende el lcd
       makeRequest();//Conectate a la pagina
       canShow = false;//Ya no puedes mostrar la data.
-      delay(1500);
+      delay(4000);
       clearScreen();//Limpia la pantalla
     }
     //else{//Si no limpia la pantalla.

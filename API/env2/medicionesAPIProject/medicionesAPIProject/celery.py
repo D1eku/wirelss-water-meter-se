@@ -2,6 +2,7 @@ from __future__ import absolute_import, unicode_literals
 import os
 from celery import Celery
 from celery import shared_task
+from measureWater import *
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'medicionesAPIProject.settings')
 
@@ -23,6 +24,13 @@ app.autodiscover_tasks()
 def print_message(message):
   print(f"Celery is working!! Message is {message}")
 
+@shared_task(name = "photo")
+def photo():
+  measure = measureWater()
+  print(measure)
+  
+  print(f"te saco foto")
+
 app.conf.beat_schedule = {
     #Scheduler Name
     'print-message-ten-seconds': {
@@ -31,7 +39,16 @@ app.conf.beat_schedule = {
         # Schedule      
         'schedule': 10.0,
         # Function Arguments 
-        'args': ("Chupala ekukaeeeeee",) 
+        'args': ("ekukaeeeeee",) 
     },
+        'print-message-ten-seconds': {
+        # Task Name (Name Specified in Decorator)
+        'task': 'photo',  
+        # Schedule      
+        'schedule': 60.0,
+        # Function Arguments 
+        'args': () 
+    },
+    
 
 } 
