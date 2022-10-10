@@ -7,6 +7,8 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 const String headerText = "Aqua Pro!";
 
+const String var = "aaaaaaaa";
+
 const int buttonPin = D0;
 
 bool canShow = false;
